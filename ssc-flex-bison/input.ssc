@@ -1,37 +1,73 @@
-// Test file for Single-Dimensional Arrays
+// Test for Single-Dimensional Arrays
+double[] singleDimArray = new double[5];
+singleDimArray[0] = 1.1;
+singleDimArray[1] = 2.2;
+singleDimArray[2] = 3.3;
+singleDimArray[3] = 4.4;
+singleDimArray[4] = 5.5;
+printd(singleDimArray[0]);
 
-// Array declaration and initialization
-double[] numbers = new double[5];
+// Declaration of a double-dimensional array
+double[,] doubleDimArray = new double[5, 5]; // 5x5 matrix of doubles
+// Accessing elements
+doubleDimArray[0, 0] = 1.23;
+double value = doubleDimArray[0, 0];
 
-// Array element assignments
-numbers[0] = 10.5;
-numbers[1] = 20.7;
-numbers[2] = 30.2;
-numbers[3] = 40.8;
-numbers[4] = 50.3;
+// Test for Double-Dimensional Arrays
+double[] doubleDimArray = new double[3 3];
+doubleDimArray[0 0] = 1.1;
+doubleDimArray[1 1] = 2.2;
+doubleDimArray[2 2] = 3.3;
+print(doubleDimArray[0 0], doubleDimArray[2 2]);
 
-// Printing array elements
-printd(numbers[0]);
-printd(numbers[1]);
-printd(numbers[2]);
-printd(numbers[3]);
-printd(numbers[4]);
+// Test for Dynamic Resizing
+DynamicArray<double> dynamicArray = new DynamicArray<double>();
+dynamicArray.Add(1.1);
+dynamicArray.Add(2.2);
+dynamicArray.Resize(5);
+dynamicArray[3] = 4.4;
+print(dynamicArray[1], dynamicArray[3]);
 
-// Using array elements in expressions
-sum = numbers[0] + numbers[1] + numbers[2] + numbers[3] + numbers[4];
-printd(sum);
+// Test for Array Slicing (Single-Dimensional)
+double[] slice1D = singleDimArray.Slice(1 3);
+print(slice1D[0], slice1D[1]);
 
-// Average calculation
-average = sum / 5.0;
-printd(average);
+// Test for Array Slicing (Double-Dimensional)
+double[] slice2D = doubleDimArray.Slice(0 2 0 2);
+print(slice2D[0 0], slice2D[1 1]);
 
-// Array bounds testing (this should produce an error)
-// Uncomment the next line to test error handling
-// numbers[5] = 60.0;
+// Test for Custom Iterators
+CustomIterator iterator = new CustomIterator(singleDimArray);
+while (iterator.HasNext()) {
+    double value = iterator.Next();
+    print(value);
+}
 
-// Using array elements in more complex expressions
-result = (numbers[0] + numbers[4]) * (numbers[2] - numbers[1]);
-printd(result);
+// Test for Array Views
+ArrayView<double> view = doubleDimArray.View(0 2 0 2); // View a 2x2 sub-matrix
+view[0 0] = 9.81; // Modify through the view
+print(view[0 0], view[1 1]);
 
-// String output for clarity
-prints("All tests completed.");
+// Test for Array Destructuring
+double[] arr = {1.0, 2.0, 3.0, 4.0};
+double a = 0.0, b = 0.0, c = 0.0, d = 0.0;
+[a, b, c, d] = arr; // Destructuring into variables
+print(a, b, c, d);
+
+// Test for Array Serialization and Deserialization
+string json = JsonSerializer.Serialize(singleDimArray); // Serialize to JSON
+double[] deserializedArray = JsonSerializer.Deserialize<double[]>(json); // Deserialize
+print(deserializedArray[0], deserializedArray[4]);
+
+// Test for Arithmetic Features
+double[] Arr1 = {1.0, 2.0, 3.0};
+double[] Arr2 = {4.0, 5.0, 6.0};
+double[] Arr3 = Arr1 + Arr2; // Addition
+print(Arr3[0], Arr3[2]); // Expected output: {5.0, 9.0}
+
+// Test for Statistical Features
+double sumVal = sum(singleDimArray); // Sum of elements in singleDimArray
+double minVal = min(singleDimArray); // Min of elements
+double maxVal = max(singleDimArray); // Max of elements
+double avgVal = avg(singleDimArray); // Average of elements
+print(sumVal, minVal, maxVal, avgVal);

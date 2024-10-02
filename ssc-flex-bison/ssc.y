@@ -10,7 +10,7 @@
     void yyerror(const char *err);
 
     
-    //define DEBUGBISON
+    #define DEBUGBISON
     //This code is for producing debug output.
     #ifdef DEBUGBISON
         #define debugBison(a) (printf("\n%d \n",a))
@@ -53,12 +53,11 @@ root:   /* empty */             {debugBison(1);}
     | array_assign root         {debugBison(16);}
     ; 
 
-array: tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'
-    {debugBison(17); createArray($4, $9);}
-    ;
+array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
+        | tok_double '[' ',' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal',' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
+        ;
 
-array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'
-    {debugBison(18); setArrayElement($1, $3, $6);}
+array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
     ;
 
 prints: tok_prints '(' tok_string_literal ')' ';'   {debugBison(5); print("%s\n", $3); } 

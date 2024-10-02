@@ -1,7 +1,7 @@
 # Makefile for SSC compiler using Flex and Bison
 
 # Compiler
-CXX = g++
+CXX = clang++
 
 # Files
 LEXER = ssc.l
