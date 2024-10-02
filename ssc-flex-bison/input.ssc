@@ -22,7 +22,8 @@ double[,] doubleDimArray = new double[3, 3];
 doubleDimArray[0, 0] = 1.1;
 doubleDimArray[1, 1] = 2.2;
 doubleDimArray[2, 2] = 3.3;
-printd(doubleDimArray[0, 0] + doubleDimArray[2, 2]);
+value = doubleDimArray[0, 0] + doubleDimArray[2, 2];
+printd(value);
 
 prints("2D Array Tests Complete.");
 
@@ -32,7 +33,9 @@ dynamicArray.Add(1.1);
 dynamicArray.Add(2.2);
 dynamicArray.Resize(5);
 dynamicArray[3] = 4.4;
-print(dynamicArray[1], dynamicArray[3]);
+printd(dynamicArray[1]);
+
+prints("Dynamic Array Tests Complete.");
 
 // Test for Array Slicing (Single-Dimensional)
 double[] slice1D = singleDimArray.Slice(1 3);

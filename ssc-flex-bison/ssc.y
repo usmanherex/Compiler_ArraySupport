@@ -31,10 +31,14 @@
 %token tok_double
 %token tok_prints
 %token tok_new
+%token tok_add
+%token tok_resize
+%token tok_dynamic_array
 %token <identifier> tok_identifier
 %token <double_literal> tok_double_literal
 %token <string_literal> tok_string_literal
 %token <integer_literal> tok_integer_literal
+
 
 %type <double_literal> term expression
 
@@ -52,7 +56,9 @@ root:   /* empty */             {debugBison(1);}
     | assignment  root          {debugBison(4);}
     | array root                {debugBison(16);}
     | array_assign root         {debugBison(16);}
-    ; 
+    | array_declaration root       {debugBison(17);}
+    | array_operation root          {debugBison(18);}
+    ;
 
 array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
         | tok_double '[' ',' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal',' tok_integer_literal ']' ';'     {debugBison(17); create2DArray($5, $10, $12);}
@@ -60,8 +66,36 @@ array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integ
 
 array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
             | tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(22); set2DArrayElement($1, $3, $5, $8);}
+            | tok_identifier '.' tok_add '(' tok_double_literal ')' ';'     {debugBison(23); addToArray($1, $5);}
+            | tok_identifier '.' tok_resize '(' tok_integer_literal ')' ';'     {debugBison(24); resizeArray($1, $5);}
             ;
 
+array_declaration:
+      tok_dynamic_array '<' tok_double '>' tok_identifier '=' tok_new tok_dynamic_array '<' tok_double '>' '(' ')' ';'
+        {debugBison(8); createArray($5, 0);}
+    | tok_dynamic_array '<' tok_double '>' tok_identifier '=' tok_new tok_dynamic_array '<' tok_double '>' '(' tok_integer_literal ')' ';'
+        {debugBison(9); createArray($5, $13);}
+    ;
+
+array_operation:
+    add_operation
+  | resize_operation
+  | assign_operation
+  ;
+
+add_operation:
+    tok_identifier '.' tok_add '(' expression ')' ';' {debugBison(10); addToArray($1, $5);}
+  ;
+
+resize_operation:
+    tok_identifier '.' tok_resize '(' tok_integer_literal ')' ';' {debugBison(11); resizeArray($1, $5);}
+  ;
+
+assign_operation:
+    tok_identifier '[' tok_integer_literal ']' '=' expression ';' {debugBison(12); setArrayElement($1, $3, $6);}
+  ;
+
+    
 prints: tok_prints '(' tok_string_literal ')' ';'   {debugBison(5); print("%s\n", $3); } 
     ;
 

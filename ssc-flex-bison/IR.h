@@ -7,28 +7,59 @@
 #include <vector>
 #include <stdexcept>
 
-// This is symbol table data structure.
-static std::map<std::string, double> symbolTable;
-static std::map<std::string, std::vector<double>> arrayTable; // 1D arrays
-static std::map<std::string, std::vector<std::vector<double>>> arrayTable2D; // 2D arrays
+// DynamicArray class definition
+template<typename T>
+class DynamicArray {
+private:
+    std::vector<T> data;
 
-// Perform binary operation for arithmetic expressions
+public:
+    DynamicArray() = default;
+
+    void Add(const T& element) {
+        data.push_back(element);
+    }
+
+    void Resize(size_t newSize) {
+        data.resize(newSize);
+    }
+
+    T& operator[](size_t index) {
+        if (index >= data.size()) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return data[index];
+    }
+
+    const T& operator[](size_t index) const {
+        if (index >= data.size()) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return data[index];
+    }
+
+    size_t Size() const {
+        return data.size();
+    }
+};
+
+// Symbol tables
+static std::map<std::string, double> symbolTable;
+static std::map<std::string, DynamicArray<double>> arrayTable;
+static std::map<std::string, DynamicArray<DynamicArray<double>>> arrayTable2D;
+
+// Binary operation for arithmetic expressions
 double performBinaryOperation(double lhs, double rhs, int op) {
     switch(op) {
-        case '+':
-            return lhs + rhs;
-        case '-':
-            return lhs - rhs;
-        case '*':
-            return lhs * rhs;
-        case '/':
-            return lhs / rhs;
-        default:
-            return 0;
+        case '+': return lhs + rhs;
+        case '-': return lhs - rhs;
+        case '*': return lhs * rhs;
+        case '/': return lhs / rhs;
+        default: return 0;
     }
 }
 
-// Print functions for formatting and displaying values
+// Print functions
 void print(const char* format, const char* value) {
     printf(format, value);
 }
@@ -39,8 +70,7 @@ void print(const char* format, double value) {
 
 // Symbol Table functions for variables
 void setValueInSymbolTable(const char* id, double value) {
-    std::string name(id);
-    symbolTable[name] = value;
+    symbolTable[std::string(id)] = value;
 }
 
 double getValueFromSymbolTable(const char* id) {
@@ -48,24 +78,21 @@ double getValueFromSymbolTable(const char* id) {
     if (symbolTable.find(name) != symbolTable.end()) {
         return symbolTable[name];
     }
-    return 0; // this is the default value for an identifier.
+    return 0; // Default value for an identifier
 }
 
-// Array support for 1D arrays
+// 1D Array functions
 void createArray(const char* id, int size) {
     std::string name(id);
-    arrayTable[name] = std::vector<double>(size, 0.0);
+    arrayTable[name] = DynamicArray<double>();
+    arrayTable[name].Resize(size);
 }
 
 double getArrayElement(const char* id, double index) {
     std::string name(id);
     int idx = static_cast<int>(index);
     if (arrayTable.find(name) != arrayTable.end()) {
-        if (idx >= 0 && idx < arrayTable[name].size()) {
-            return arrayTable[name][idx];
-        } else {
-            throw std::out_of_range("Array index out of bounds");
-        }
+        return arrayTable[name][idx];
     }
     throw std::runtime_error("Array not found");
 }
@@ -74,20 +101,39 @@ void setArrayElement(const char* id, double index, double value) {
     std::string name(id);
     int idx = static_cast<int>(index);
     if (arrayTable.find(name) != arrayTable.end()) {
-        if (idx >= 0 && idx < arrayTable[name].size()) {
-            arrayTable[name][idx] = value;
-        } else {
-            throw std::out_of_range("Array index out of bounds");
-        }
+        arrayTable[name][idx] = value;
     } else {
         throw std::runtime_error("Array not found");
     }
 }
 
-// New functions for 2D arrays
+// Dynamic Array operations
+void addToArray(const char* id, double value) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        arrayTable[name].Add(value);
+    } else {
+        throw std::runtime_error("Array not found");
+    }
+}
+
+void resizeArray(const char* id, int newSize) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        arrayTable[name].Resize(newSize);
+    } else {
+        throw std::runtime_error("Array not found");
+    }
+}
+
+// 2D Array functions
 void create2DArray(const char* id, int rows, int cols) {
     std::string name(id);
-    arrayTable2D[name] = std::vector<std::vector<double>>(rows, std::vector<double>(cols, 0.0));
+    arrayTable2D[name] = DynamicArray<DynamicArray<double>>();
+    arrayTable2D[name].Resize(rows);
+    for (int i = 0; i < rows; ++i) {
+        arrayTable2D[name][i].Resize(cols);
+    }
 }
 
 double get2DArrayElement(const char* id, double row, double col) {
@@ -95,17 +141,9 @@ double get2DArrayElement(const char* id, double row, double col) {
     int rowIdx = static_cast<int>(row);
     int colIdx = static_cast<int>(col);
     if (arrayTable2D.find(name) != arrayTable2D.end()) {
-        if (rowIdx >= 0 && rowIdx < arrayTable2D[name].size()) {
-            if (colIdx >= 0 && colIdx < arrayTable2D[name][rowIdx].size()) {
-                return arrayTable2D[name][rowIdx][colIdx];
-            } else {
-                throw std::out_of_range("Column index out of bounds");
-            }
-        } else {
-            throw std::out_of_range("Row index out of bounds");
-        }
+        return arrayTable2D[name][rowIdx][colIdx];
     }
-    throw std::runtime_error("Array not found");
+    throw std::runtime_error("2D Array not found");
 }
 
 void set2DArrayElement(const char* id, double row, double col, double value) {
@@ -113,19 +151,10 @@ void set2DArrayElement(const char* id, double row, double col, double value) {
     int rowIdx = static_cast<int>(row);
     int colIdx = static_cast<int>(col);
     if (arrayTable2D.find(name) != arrayTable2D.end()) {
-        if (rowIdx >= 0 && rowIdx < arrayTable2D[name].size()) {
-            if (colIdx >= 0 && colIdx < arrayTable2D[name][rowIdx].size()) {
-                arrayTable2D[name][rowIdx][colIdx] = value;
-            } else {
-                throw std::out_of_range("Column index out of bounds");
-            }
-        } else {
-            throw std::out_of_range("Row index out of bounds");
-        }
+        arrayTable2D[name][rowIdx][colIdx] = value;
     } else {
-        throw std::runtime_error("Array not found");
+        throw std::runtime_error("2D Array not found");
     }
 }
 
 #endif // IR_H
-
