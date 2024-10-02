@@ -7,18 +7,24 @@ singleDimArray[3] = 4.4;
 singleDimArray[4] = 5.5;
 printd(singleDimArray[0]);
 
+prints("Starting 2D Array Tests.");
+
 // Declaration of a double-dimensional array
 double[,] doubleDimArray = new double[5, 5]; // 5x5 matrix of doubles
+
 // Accessing elements
 doubleDimArray[0, 0] = 1.23;
-double value = doubleDimArray[0, 0];
+value = doubleDimArray[0, 0];
+printd(value);
 
 // Test for Double-Dimensional Arrays
-double[] doubleDimArray = new double[3 3];
-doubleDimArray[0 0] = 1.1;
-doubleDimArray[1 1] = 2.2;
-doubleDimArray[2 2] = 3.3;
-print(doubleDimArray[0 0], doubleDimArray[2 2]);
+double[,] doubleDimArray = new double[3, 3];
+doubleDimArray[0, 0] = 1.1;
+doubleDimArray[1, 1] = 2.2;
+doubleDimArray[2, 2] = 3.3;
+printd(doubleDimArray[0, 0] + doubleDimArray[2, 2]);
+
+prints("2D Array Tests Complete.");
 
 // Test for Dynamic Resizing
 DynamicArray<double> dynamicArray = new DynamicArray<double>();

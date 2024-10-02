@@ -14,6 +14,7 @@
     //This code is for producing debug output.
     #ifdef DEBUGBISON
         #define debugBison(a) (printf("\n%d \n",a))
+        #define debugBisonStr(a) (printf("\n%s \n",a))
     #else
         #define debugBison(a)
     #endif
@@ -54,11 +55,12 @@ root:   /* empty */             {debugBison(1);}
     ; 
 
 array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
-        | tok_double '[' ',' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal',' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
+        | tok_double '[' ',' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal',' tok_integer_literal ']' ';'     {debugBison(17); create2DArray($5, $10, $12);}
         ;
 
 array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
-    ;
+            | tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(22); set2DArrayElement($1, $3, $5, $8);}
+            ;
 
 prints: tok_prints '(' tok_string_literal ')' ';'   {debugBison(5); print("%s\n", $3); } 
     ;
@@ -68,7 +70,8 @@ printd: tok_printd '(' term ')' ';'     {debugBison(6); print("%lf\n", $3); }
 
 term:   tok_identifier          {debugBison(7); $$ = getValueFromSymbolTable($1); } 
     | tok_double_literal        {debugBison(8); $$ = $1; }
-    | tok_identifier '[' tok_integer_literal ']' {debugBison(19); $$ = getArrayElement($1, $3);}
+    | tok_identifier '[' tok_integer_literal ']' {debugBison(102); $$ = getArrayElement($1, $3);}
+    | tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']'        {debugBisonStr("Got 2D value"); $$ = get2DArrayElement($1, $3, $5);}
     ;
 
 assignment:  tok_identifier '=' expression ';'  {debugBison(9); setValueInSymbolTable($1, $3); } 
