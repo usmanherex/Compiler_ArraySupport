@@ -1,0 +1,37 @@
+// Test file for Single-Dimensional Arrays
+
+// Array declaration and initialization
+double[] numbers = new double[5];
+
+// Array element assignments
+numbers[0] = 10.5;
+numbers[1] = 20.7;
+numbers[2] = 30.2;
+numbers[3] = 40.8;
+numbers[4] = 50.3;
+
+// Printing array elements
+printd(numbers[0]);
+printd(numbers[1]);
+printd(numbers[2]);
+printd(numbers[3]);
+printd(numbers[4]);
+
+// Using array elements in expressions
+sum = numbers[0] + numbers[1] + numbers[2] + numbers[3] + numbers[4];
+printd(sum);
+
+// Average calculation
+average = sum / 5.0;
+printd(average);
+
+// Array bounds testing (this should produce an error)
+// Uncomment the next line to test error handling
+// numbers[5] = 60.0;
+
+// Using array elements in more complex expressions
+result = (numbers[0] + numbers[4]) * (numbers[2] - numbers[1]);
+printd(result);
+
+// String output for clarity
+prints("All tests completed.");
