@@ -22,6 +22,7 @@
 
 "printd"                {debugFlex(tok_printd); return tok_printd;}
 "prints"                {debugFlex(tok_prints); return tok_prints;}
+"Slice"                 {debugFlex(tok_slice); return tok_slice;}
 "double"                {debugFlex(tok_double); return tok_double;}
 "new"                   {debugFlex(tok_new); return tok_new;}
 "Add"                   {debugFlex(tok_add); return tok_add;}

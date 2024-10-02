@@ -36,21 +36,22 @@
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     tok_printd = 258,
-     tok_double = 259,
-     tok_prints = 260,
-     tok_new = 261,
-     tok_add = 262,
-     tok_resize = 263,
-     tok_dynamic_array = 264,
-     tok_identifier = 265,
-     tok_double_literal = 266,
-     tok_string_literal = 267,
-     tok_integer_literal = 268
-   };
+  enum yytokentype
+  {
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    tok_printd = 258,              /* tok_printd  */
+    tok_double = 259,              /* tok_double  */
+    tok_prints = 260,              /* tok_prints  */
+    tok_new = 261,                 /* tok_new  */
+    tok_identifier = 262,          /* tok_identifier  */
+    tok_double_literal = 263,      /* tok_double_literal  */
+    tok_string_literal = 264,      /* tok_string_literal  */
+    tok_integer_literal = 265      /* tok_integer_literal  */
+  };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 
@@ -67,7 +68,7 @@ typedef union YYSTYPE
     int integer_literal;
     char *string_literal;
 
-
+#line 81 "ssc.tab.h"
 
 /* Line 1676 of yacc.c  */
 #line 74 "ssc.tab.h"
