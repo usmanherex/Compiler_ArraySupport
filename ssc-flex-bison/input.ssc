@@ -33,7 +33,9 @@ dynamicArray.Add(1.1);
 dynamicArray.Add(2.2);
 dynamicArray.Resize(5);
 dynamicArray[3] = 4.4;
-print(dynamicArray[1], dynamicArray[3]);
+printd(dynamicArray[1]);
+
+prints("resize Array Tests Complete.");
 
 // Test for Array Slicing (Single-Dimensional)
 double[] slice1D = singleDimArray.Slice(1, 3);
