@@ -57,11 +57,12 @@ extern int yydebug;
     tok_printd = 258,              /* tok_printd  */
     tok_double = 259,              /* tok_double  */
     tok_prints = 260,              /* tok_prints  */
-    tok_new = 261,                 /* tok_new  */
-    tok_identifier = 262,          /* tok_identifier  */
-    tok_double_literal = 263,      /* tok_double_literal  */
-    tok_string_literal = 264,      /* tok_string_literal  */
-    tok_integer_literal = 265      /* tok_integer_literal  */
+    tok_slice = 261,               /* tok_slice  */
+    tok_new = 262,                 /* tok_new  */
+    tok_identifier = 263,          /* tok_identifier  */
+    tok_double_literal = 264,      /* tok_double_literal  */
+    tok_string_literal = 265,      /* tok_string_literal  */
+    tok_integer_literal = 266      /* tok_integer_literal  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -77,7 +78,7 @@ union YYSTYPE
     int integer_literal;
     char *string_literal;
 
-#line 81 "ssc.tab.h"
+#line 82 "ssc.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

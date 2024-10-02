@@ -30,6 +30,7 @@
 %token tok_printd
 %token tok_double
 %token tok_prints
+%token tok_slice
 %token tok_new
 %token <identifier> tok_identifier
 %token <double_literal> tok_double_literal
@@ -56,6 +57,9 @@ root:   /* empty */             {debugBison(1);}
 
 array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
         | tok_double '[' ',' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal',' tok_integer_literal ']' ';'     {debugBison(17); create2DArray($5, $10, $12);}
+        | tok_double '[' ']' tok_identifier '=' tok_identifier '.' tok_slice '(' tok_integer_literal ',' tok_integer_literal ')' ';' {debugBison(300); slice1D($6, $4, $10, $12);}
+        | tok_double '[' ',' ']' tok_identifier '=' tok_identifier '.' tok_slice '(' tok_integer_literal ',' tok_integer_literal ',' tok_integer_literal ',' tok_integer_literal ')' ';' 
+            {debugBison(300); slice2D($7, $5, $11, $13, $15, $17);}
         ;
 
 array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
