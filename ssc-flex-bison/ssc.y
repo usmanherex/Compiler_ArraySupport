@@ -77,6 +77,9 @@ array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integ
 
 array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
             | tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(22); set2DArrayElement($1, $3, $5, $8);}
+            | tok_double '[' ']' tok_identifier '=' tok_identifier '+' tok_identifier ';'     {debugBison(90); addArrays($4, $6, $8);}
+            | tok_double '[' ']' tok_identifier '=' tok_identifier '-' tok_identifier ';'     {debugBison(90); subtractArrays($4, $6, $8);}
+            | tok_double '[' ',' ']' tok_identifier '=' tok_identifier '*' tok_identifier ';'     {debugBison(90); multiplyArraysToMatrix($5, $7, $9);}
             | tok_identifier '.' tok_add '(' tok_double_literal ')' ';'     {debugBison(23); addToArray($1, $5);}
             | tok_identifier '.' tok_resize '(' tok_integer_literal ')' ';'     {debugBison(24); resizeArray($1, $5);}
             ;
@@ -137,6 +140,8 @@ term:   tok_identifier          {debugBison(7); $$ = getDoubleFromSymbolTable($1
     ;
 
 assignment:  tok_identifier '=' expression ';'  {debugBison(9); setValueInSymbolTable($1, $3); } 
+          |  tok_identifier '=' tok_identifier '.' '.' tok_identifier ';'  {debugBison(9); dotProductArrays($6, $3, $1); } 
+          ;
     ;
     
 expression: term                {debugBison(10); $$= $1;}

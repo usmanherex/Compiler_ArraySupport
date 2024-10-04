@@ -268,4 +268,90 @@ void deserializeArray(const char* id, const char* json) {
     arrayTable[name] = values;
 }
 
+void validateArraySizes(const char* arr1, const char* arr2) {
+    std::string name1(arr1);
+    std::string name2(arr2);
+    if (arrayTable[name1].size() != arrayTable[name2].size()) {
+        throw std::runtime_error("Array sizes do not match.");
+    }
+}
+
+void addArrays(const char* resultArr, const char* arr1, const char* arr2 ) {
+    std::string name1(arr1);
+    std::string name2(arr2);
+    std::string resultName(resultArr);
+    
+    if (arrayTable.find(name1) != arrayTable.end() && arrayTable.find(name2) != arrayTable.end()) {
+        validateArraySizes(arr1, arr2);
+        createArray(resultArr, arrayTable[name1].size());  // Create result array
+        std::transform(arrayTable[name1].begin(), arrayTable[name1].end(), arrayTable[name2].begin(), arrayTable[resultName].begin(), std::plus<double>());
+    } else {
+        throw std::runtime_error("Arrays not found.");
+    }
+}
+
+// 9.2 Subtraction of two arrays with result stored in a new array
+void subtractArrays(const char* resultArr, const char* arr1, const char* arr2)  {
+    std::string name1(arr1);
+    std::string name2(arr2);
+    std::string resultName(resultArr);
+    
+    if (arrayTable.find(name1) != arrayTable.end() && arrayTable.find(name2) != arrayTable.end()) {
+        validateArraySizes(arr1, arr2);
+        createArray(resultArr, arrayTable[name1].size());  // Create result array
+        std::transform(arrayTable[name1].begin(), arrayTable[name1].end(), arrayTable[name2].begin(), arrayTable[resultName].begin(), std::minus<double>());
+    } else {
+        throw std::runtime_error("Arrays not found.");
+    }
+}
+
+// 9.3 Multiplication of two arrays resulting in a 2D array (Matrix Multiplication)
+void multiplyArraysToMatrix(const char* resultArr, const char* arr1, const char* arr2 ) {
+    std::string name1(arr1);
+    std::string name2(arr2);
+    std::string resultName(resultArr);
+
+    // Check if both arrays exist
+    if (arrayTable.find(name1) != arrayTable.end() && arrayTable.find(name2) != arrayTable.end()) {
+        std::vector<double>& vec1 = arrayTable[name1];
+        std::vector<double>& vec2 = arrayTable[name2];
+
+        int rows = vec1.size(); // Number of elements in the first array
+        int cols = vec2.size(); // Number of elements in the second array
+
+        // Check for compatibility
+        if (rows != cols) {
+            throw std::runtime_error("Incompatible arrays: The number of elements in the first array does not match the second array.");
+        }
+
+        // Create 2D array result with dimensions (rows x cols)
+        create2DArray(resultArr, rows, cols);
+
+        // Perform matrix multiplication
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                // Multiply elements and store in the 2D result array
+                arrayTable2D[resultName][i][j] = vec1[i] * vec2[j];
+            }
+        }
+    } else {
+        throw std::runtime_error("One or both arrays not found.");
+    }
+}
+
+// 9.4 Dot product of two arrays with result stored in a new variable
+void dotProductArrays(const char* arr1, const char* arr2, const char* resultName) {
+    std::string name1(arr1);
+    std::string name2(arr2);
+    std::string result(resultName);
+    
+    if (arrayTable.find(name1) != arrayTable.end() && arrayTable.find(name2) != arrayTable.end()) {
+        validateArraySizes(arr1, arr2);
+        double resultValue = std::inner_product(arrayTable[name1].begin(), arrayTable[name1].end(), arrayTable[name2].begin(), 0.0);
+        setValueInSymbolTable(resultName, resultValue);  // Store result in symbol table
+    } else {
+        throw std::runtime_error("Arrays not found.");
+    }
+}
+
 #endif // IR_H
