@@ -51,10 +51,12 @@
      tok_min = 267,
      tok_max = 268,
      tok_avg = 269,
-     tok_identifier = 270,
-     tok_double_literal = 271,
-     tok_string_literal = 272,
-     tok_integer_literal = 273
+     tok_serialize = 270,
+     tok_deserialize = 271,
+     tok_identifier = 272,
+     tok_double_literal = 273,
+     tok_string_literal = 274,
+     tok_integer_literal = 275
    };
 #endif
 
@@ -75,7 +77,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 79 "ssc.tab.h"
+#line 81 "ssc.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -8,11 +8,15 @@
 #include <stdexcept>
 #include <numeric>   
 #include <algorithm>   
+#include <sstream>
+#include <iomanip>
 
 // Symbol tables
-static std::map<std::string, double> symbolTable;
+static std::map<std::string, double> doubleSymbolTable;
+static std::map<std::string, std::string> stringSymbolTable;
 static std::map<std::string, std::vector<double>> arrayTable;
 static std::map<std::string, std::vector<std::vector<double>>> arrayTable2D;
+static std::map<std::string, std::string> stringTable;
 
 // Binary operation for arithmetic expressions
 double performBinaryOperation(double lhs, double rhs, int op) {
@@ -34,18 +38,30 @@ void print(const char* format, double value) {
     printf(format, value);
 }
 
-// Symbol Table functions for variables
 void setValueInSymbolTable(const char* id, double value) {
-    symbolTable[std::string(id)] = value;
+    doubleSymbolTable[std::string(id)] = value;
 }
 
-double getValueFromSymbolTable(const char* id) {
-    std::string name(id);
-    if (symbolTable.find(name) != symbolTable.end()) {
-        return symbolTable[name];
-    }
-    return 0; // Default value for an identifier
+void setValueInSymbolTable(const char* id, const char* value) {
+    stringSymbolTable[std::string(id)] = std::string(value);
 }
+
+double getDoubleFromSymbolTable(const char* id) {
+    std::string name(id);
+    if (doubleSymbolTable.find(name) != doubleSymbolTable.end()) {
+        return doubleSymbolTable[name];
+    }
+    return 0; // Default value for a double identifier
+}
+
+const char* getStringFromSymbolTable(const char* id) {
+    std::string name(id);
+    if (stringSymbolTable.find(name) != stringSymbolTable.end()) {
+        return stringSymbolTable[name].c_str();
+    }
+    return ""; // Default value for a string identifier
+}
+
 
 // 1D Array functions
 void createArray(const char* id, int size) {
@@ -209,5 +225,47 @@ double avgArray(const char* id) {
     throw std::runtime_error("Array not found");
 }
 
+
+
+
+// Modify the serializeArray function to return const char*
+const char* serializeArray(const char* id) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        std::ostringstream oss;
+        oss << "[";
+        for (size_t i = 0; i < arrayTable[name].size(); ++i) {
+            if (i > 0) oss << ",";
+            oss << std::fixed << std::setprecision(6) << arrayTable[name][i];
+        }
+        oss << "]";
+        // Store the result in the stringTable and return it
+        stringTable[name + "_serialized"] = oss.str();
+        return stringTable[name + "_serialized"].c_str();
+    }
+    throw std::runtime_error("Array not found");
+}
+
+// Deserialize a JSON-like string to an array
+void deserializeArray(const char* id, const char* json) {
+    std::string name(id);
+    std::string jsonStr(json);
+    std::vector<double> values;
+    
+    size_t start = jsonStr.find('[');
+    size_t end = jsonStr.find(']');
+    if (start == std::string::npos || end == std::string::npos) {
+        throw std::runtime_error("Invalid JSON format");
+    }
+    
+    std::string content = jsonStr.substr(start + 1, end - start - 1);
+    std::istringstream iss(content);
+    std::string token;
+    while (std::getline(iss, token, ',')) {
+        values.push_back(std::stod(token));
+    }
+    
+    arrayTable[name] = values;
+}
 
 #endif // IR_H

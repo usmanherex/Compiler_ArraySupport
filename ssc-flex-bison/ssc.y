@@ -39,6 +39,8 @@
 %token tok_min
 %token tok_max
 %token tok_avg
+%token tok_serialize
+%token tok_deserialize
 %token <identifier> tok_identifier
 %token <double_literal> tok_double_literal
 %token <string_literal> tok_string_literal
@@ -90,6 +92,8 @@ array_operation:
     add_operation
   | resize_operation
   | assign_operation
+  | serialize_operation
+  | deserialize_operation
   ;
 
 add_operation:
@@ -104,6 +108,13 @@ assign_operation:
     tok_identifier '[' tok_integer_literal ']' '=' expression ';' {debugBison(12); setArrayElement($1, $3, $6);}
   ;
 
+serialize_operation:
+    tok_identifier '=' tok_serialize '(' tok_identifier ')' ';' {debugBison(25); setValueInSymbolTable($1, serializeArray($5));}
+  ;
+deserialize_operation:
+    tok_deserialize '(' tok_identifier ',' tok_identifier ')' ';' {debugBison(26); deserializeArray($3, getStringFromSymbolTable($5));}
+  ;  
+
 statistical_operation:
     tok_identifier '=' tok_sum '(' tok_identifier ')' ';' {debugBison(20); setValueInSymbolTable($1, sumArray($5));}
     | tok_identifier '=' tok_min '(' tok_identifier ')' ';' {debugBison(21); setValueInSymbolTable($1, minArray($5));}
@@ -113,12 +124,13 @@ statistical_operation:
 
     
 prints: tok_prints '(' tok_string_literal ')' ';'   {debugBison(5); print("%s\n", $3); } 
+    | tok_prints '(' tok_identifier ')' ';'   {debugBison(5); print("%s\n", getStringFromSymbolTable($3)); } 
     ;
 
 printd: tok_printd '(' term ')' ';'     {debugBison(6); print("%lf\n", $3); }
     ;
 
-term:   tok_identifier          {debugBison(7); $$ = getValueFromSymbolTable($1); } 
+term:   tok_identifier          {debugBison(7); $$ = getDoubleFromSymbolTable($1); } 
     | tok_double_literal        {debugBison(8); $$ = $1; }
     | tok_identifier '[' tok_integer_literal ']' {debugBison(102); $$ = getArrayElement($1, $3);}
     | tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']'        {debugBisonStr("Got 2D value"); $$ = get2DArrayElement($1, $3, $5);}
@@ -126,6 +138,7 @@ term:   tok_identifier          {debugBison(7); $$ = getValueFromSymbolTable($1)
 
 assignment:  tok_identifier '=' expression ';'  {debugBison(9); setValueInSymbolTable($1, $3); } 
     ;
+    
 expression: term                {debugBison(10); $$= $1;}
        | expression '+' expression      {debugBison(11); $$ = performBinaryOperation ($1, $3, '+');}
        | expression '-' expression      {debugBison(12); $$ = performBinaryOperation ($1, $3, '-');}

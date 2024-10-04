@@ -63,6 +63,29 @@ printd(avgVal);
 
 prints("END: Statistical Features Test");
 
+
+prints("Start: Serialization Test");
+double[] myArray = new double[5];
+myArray[0] = 1.0;
+myArray[1] = 2.0;
+myArray[2] = 3.0;
+myArray[3] = 4.0;
+myArray[4] = 5.0;
+
+// Serialize the array
+json = Serialize(myArray);
+prints(json);
+
+// Deserialize into a new array
+Deserialize(newArray, json);
+
+// Print elements of the new array
+printd(newArray[0]);
+printd(newArray[4]);
+
+
+prints("END: Serialization Test");
+
 // Test for Custom Iterators
 CustomIterator iterator = new CustomIterator(singleDimArray);
 while (iterator.HasNext()) {
@@ -84,7 +107,8 @@ print(a, b, c, d);
 // Test for Array Serialization and Deserialization
 string json = JsonSerializer.Serialize(singleDimArray); // Serialize to JSON
 double[] deserializedArray = JsonSerializer.Deserialize<double[]>(json); // Deserialize
-print(deserializedArray[0], deserializedArray[4]);
+print(deserializedArray[0]);
+print(deserializedArray[4]);
 
 // Test for Arithmetic Features
 double[] Arr1 = {1.0, 2.0, 3.0};
