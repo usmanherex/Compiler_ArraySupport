@@ -63,6 +63,29 @@ printd(avgVal);
 
 prints("END: Statistical Features Test");
 
+
+prints("Start: Arithmetic Features Test");
+
+// Test for Arithmetic Features
+double[] Arr1 = new double[3];
+Arr1[0] = 1.0;
+Arr1[1] = 2.0;
+Arr1[2] = 3.0;
+double[] Arr2 = new double[3];
+Arr2[0] = 1.0;
+Arr2[1] = 2.0;
+Arr2[2] = 3.0;
+double[] Arr3 = Arr1 + Arr2; // Addition
+double[] Arr4 = Arr1 - Arr2; 
+double[,] Arr5 = Arr1 * Arr2; 
+dotProd = Arr1 .. Arr2;
+printd(Arr3[1]); // Expected output: {5.0}
+printd(Arr4[1]); // Expected output: {5.0}
+printd(Arr5[0, 0]); // Expected output: {5.0}
+printd(dotProd); // Expected output: {5.0}
+
+prints("END: Arithmetic Features Test");
+
 // Test for Custom Iterators
 CustomIterator iterator = new CustomIterator(singleDimArray);
 while (iterator.HasNext()) {
