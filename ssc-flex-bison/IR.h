@@ -6,6 +6,8 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
+#include <numeric>   
+#include <algorithm>   
 
 // Symbol tables
 static std::map<std::string, double> symbolTable;
@@ -171,5 +173,41 @@ std::vector<std::vector<double>> slice2D(const char* arrayName, const char* newA
     arrayTable2D[std::string(newArrayName)] = slicedArray; // Store the sliced 2D array into the new array
     return slicedArray;
 }
+
+
+
+double sumArray(const char* id) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        return std::accumulate(arrayTable[name].begin(), arrayTable[name].end(), 0.0);
+    }
+    throw std::runtime_error("Array not found");
+}
+
+double minArray(const char* id) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        return *std::min_element(arrayTable[name].begin(), arrayTable[name].end());
+    }
+    throw std::runtime_error("Array not found");
+}
+
+double maxArray(const char* id) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        return *std::max_element(arrayTable[name].begin(), arrayTable[name].end());
+    }
+    throw std::runtime_error("Array not found");
+}
+
+double avgArray(const char* id) {
+    std::string name(id);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        double sum = std::accumulate(arrayTable[name].begin(), arrayTable[name].end(), 0.0);
+        return sum / arrayTable[name].size();
+    }
+    throw std::runtime_error("Array not found");
+}
+
 
 #endif // IR_H

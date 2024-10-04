@@ -47,10 +47,14 @@
      tok_add = 263,
      tok_resize = 264,
      tok_dynamic_array = 265,
-     tok_identifier = 266,
-     tok_double_literal = 267,
-     tok_string_literal = 268,
-     tok_integer_literal = 269
+     tok_sum = 266,
+     tok_min = 267,
+     tok_max = 268,
+     tok_avg = 269,
+     tok_identifier = 270,
+     tok_double_literal = 271,
+     tok_string_literal = 272,
+     tok_integer_literal = 273
    };
 #endif
 
@@ -71,7 +75,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 75 "ssc.tab.h"
+#line 79 "ssc.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

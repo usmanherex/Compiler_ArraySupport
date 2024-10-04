@@ -49,6 +49,20 @@ printd(slice2D[1, 1]);
 
 prints("END: Array Slicing Test");
 
+
+prints("Start: Statistical Features Test");
+// Test for Statistical Features
+sumVal = sum(singleDimArray);
+minVal = min(singleDimArray);
+maxVal = max(singleDimArray);
+avgVal = avg(singleDimArray);
+printd(sumVal);
+printd(minVal);
+printd(maxVal);
+printd(avgVal);
+
+prints("END: Statistical Features Test");
+
 // Test for Custom Iterators
 CustomIterator iterator = new CustomIterator(singleDimArray);
 while (iterator.HasNext()) {

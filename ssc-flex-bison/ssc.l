@@ -28,6 +28,10 @@
 "Add"                   {debugFlex(tok_add); return tok_add;}
 "Resize"                {debugFlex(tok_resize); return tok_resize;}
 "DynamicArray"          {debugFlex(tok_dynamic_array); return tok_dynamic_array;}
+"sum"                   {debugFlex(tok_sum); return tok_sum;}
+"min"                   {debugFlex(tok_min); return tok_min;}
+"max"                   {debugFlex(tok_max); return tok_max;}
+"avg"                   {debugFlex(tok_avg); return tok_avg;}
 [a-zA-Z][a-zA-Z0-9_]*   {debugFlex(tok_identifier); yylval.identifier=strdup(yytext); return tok_identifier;}
 [0]|[1-9][0-9]*         {debugFlex(tok_integer_literal); yylval.integer_literal=atoi(yytext); return tok_integer_literal;}
 [0-9]+(\.[0-9]+)?       {debugFlex(tok_double_literal); yylval.double_literal=atof(yytext); return tok_double_literal;}

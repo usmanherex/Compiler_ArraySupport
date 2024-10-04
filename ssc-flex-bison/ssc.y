@@ -35,6 +35,10 @@
 %token tok_add
 %token tok_resize
 %token tok_dynamic_array
+%token tok_sum
+%token tok_min
+%token tok_max
+%token tok_avg
 %token <identifier> tok_identifier
 %token <double_literal> tok_double_literal
 %token <string_literal> tok_string_literal
@@ -57,8 +61,9 @@ root:   /* empty */             {debugBison(1);}
     | assignment  root          {debugBison(4);}
     | array root                {debugBison(16);}
     | array_assign root         {debugBison(16);}
-    | array_declaration root       {debugBison(17);}
-    | array_operation root          {debugBison(18);}
+    | array_declaration root    {debugBison(17);}
+    | array_operation root      {debugBison(18);}
+    | statistical_operation root {debugBison(19);}
     ;
 
 array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
@@ -98,6 +103,13 @@ resize_operation:
 assign_operation:
     tok_identifier '[' tok_integer_literal ']' '=' expression ';' {debugBison(12); setArrayElement($1, $3, $6);}
   ;
+
+statistical_operation:
+    tok_identifier '=' tok_sum '(' tok_identifier ')' ';' {debugBison(20); setValueInSymbolTable($1, sumArray($5));}
+    | tok_identifier '=' tok_min '(' tok_identifier ')' ';' {debugBison(21); setValueInSymbolTable($1, minArray($5));}
+    | tok_identifier '=' tok_max '(' tok_identifier ')' ';' {debugBison(22); setValueInSymbolTable($1, maxArray($5));}
+    | tok_identifier '=' tok_avg '(' tok_identifier ')' ';' {debugBison(23); setValueInSymbolTable($1, avgArray($5));}
+    ;  
 
     
 prints: tok_prints '(' tok_string_literal ')' ';'   {debugBison(5); print("%s\n", $3); } 
