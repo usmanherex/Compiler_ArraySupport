@@ -84,3 +84,4 @@ double minVal = min(singleDimArray); // Min of elements
 double maxVal = max(singleDimArray); // Max of elements
 double avgVal = avg(singleDimArray); // Average of elements
 print(sumVal, minVal, maxVal, avgVal);
+

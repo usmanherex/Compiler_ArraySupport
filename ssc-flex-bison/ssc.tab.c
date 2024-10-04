@@ -1571,14 +1571,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 79 "ssc.y"
-    {debugBison(8); createDynamicArray((yyvsp[(5) - (14)].identifier), 0);;}
+    {debugBison(8); createArray((yyvsp[(5) - (14)].identifier), 0);;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
 #line 81 "ssc.y"
-    {debugBison(9); createDynamicArray((yyvsp[(5) - (15)].identifier), (yyvsp[(13) - (15)].integer_literal));;}
+    {debugBison(9); createArray((yyvsp[(5) - (15)].identifier), (yyvsp[(13) - (15)].integer_literal));;}
     break;
 
   case 23:

@@ -7,46 +7,10 @@
 #include <vector>
 #include <stdexcept>
 
-// DynamicArray class definition
-template<typename T>
-class DynamicArray {
-private:
-    std::vector<T> data;
-
-public:
-    DynamicArray() = default;
-
-    void Add(const T& element) {
-        data.push_back(element);
-    }
-
-    void Resize(size_t newSize) {
-        data.resize(newSize);
-    }
-
-    T& operator[](size_t index) {
-        if (index >= data.size()) {
-            throw std::out_of_range("Index out of bounds");
-        }
-        return data[index];
-    }
-
-    const T& operator[](size_t index) const {
-        if (index >= data.size()) {
-            throw std::out_of_range("Index out of bounds");
-        }
-        return data[index];
-    }
-
-    size_t Size() const {
-        return data.size();
-    }
-};
-
 // Symbol tables
 static std::map<std::string, double> symbolTable;
-static std::map<std::string, DynamicArray<double>> arrayTable;
-static std::map<std::string, DynamicArray<DynamicArray<double>>> arrayTable2D;
+static std::map<std::string, std::vector<double>> arrayTable;
+static std::map<std::string, std::vector<std::vector<double>>> arrayTable2D;
 
 // Binary operation for arithmetic expressions
 double performBinaryOperation(double lhs, double rhs, int op) {
@@ -84,8 +48,7 @@ double getValueFromSymbolTable(const char* id) {
 // 1D Array functions
 void createArray(const char* id, int size) {
     std::string name(id);
-    arrayTable[name] = DynamicArray<double>();
-    arrayTable[name].Resize(size);
+    arrayTable[name] = std::vector<double>(size);
 }
 
 double getArrayElement(const char* id, double index) {
@@ -111,7 +74,7 @@ void setArrayElement(const char* id, double index, double value) {
 void addToArray(const char* id, double value) {
     std::string name(id);
     if (arrayTable.find(name) != arrayTable.end()) {
-        arrayTable[name].Add(value);
+        arrayTable[name].push_back(value);
     } else {
         throw std::runtime_error("Array not found");
     }
@@ -120,7 +83,7 @@ void addToArray(const char* id, double value) {
 void resizeArray(const char* id, int newSize) {
     std::string name(id);
     if (arrayTable.find(name) != arrayTable.end()) {
-        arrayTable[name].Resize(newSize);
+        arrayTable[name].resize(newSize);
     } else {
         throw std::runtime_error("Array not found");
     }
@@ -129,11 +92,7 @@ void resizeArray(const char* id, int newSize) {
 // 2D Array functions
 void create2DArray(const char* id, int rows, int cols) {
     std::string name(id);
-    arrayTable2D[name] = DynamicArray<DynamicArray<double>>();
-    arrayTable2D[name].Resize(rows);
-    for (int i = 0; i < rows; ++i) {
-        arrayTable2D[name][i].Resize(cols);
-    }
+    arrayTable2D[name] = std::vector<std::vector<double>>(rows, std::vector<double>(cols));
 }
 
 double get2DArrayElement(const char* id, double row, double col) {
@@ -202,7 +161,6 @@ std::vector<std::vector<double>> slice2DArray(const char* id, int rowStart, int 
 // Utility function to create a slice1D (single-dimensional array)
 std::vector<double> slice1D(const char* arrayName, const char* newArrayName, int startIdx, int endIdx) {
     std::vector<double> slicedArray = sliceArray(arrayName, startIdx, endIdx);
-    createArray(newArrayName, endIdx - startIdx); // Create the new array with the sliced size
     arrayTable[std::string(newArrayName)] = slicedArray; // Store the sliced array into the new array
     return slicedArray;
 }
@@ -210,7 +168,6 @@ std::vector<double> slice1D(const char* arrayName, const char* newArrayName, int
 // Utility function to create a slice2D (two-dimensional array)
 std::vector<std::vector<double>> slice2D(const char* arrayName, const char* newArrayName, int rowStartIdx, int rowEndIdx, int colStartIdx, int colEndIdx) {
     std::vector<std::vector<double>> slicedArray = slice2DArray(arrayName, rowStartIdx, rowEndIdx, colStartIdx, colEndIdx);
-    create2DArray(newArrayName, rowEndIdx - rowStartIdx, colEndIdx - colStartIdx); // Create the new 2D array with the sliced dimensions
     arrayTable2D[std::string(newArrayName)] = slicedArray; // Store the sliced 2D array into the new array
     return slicedArray;
 }

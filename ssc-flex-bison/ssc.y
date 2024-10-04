@@ -76,9 +76,9 @@ array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal 
 
 array_declaration:
       tok_dynamic_array '<' tok_double '>' tok_identifier '=' tok_new tok_dynamic_array '<' tok_double '>' '(' ')' ';'
-        {debugBison(8); createDynamicArray($5, 0);}
+        {debugBison(8); createArray($5, 0);}
     | tok_dynamic_array '<' tok_double '>' tok_identifier '=' tok_new tok_dynamic_array '<' tok_double '>' '(' tok_integer_literal ')' ';'
-        {debugBison(9); createDynamicArray($5, $13);}
+        {debugBison(9); createArray($5, $13);}
     ;
 
 array_operation:
