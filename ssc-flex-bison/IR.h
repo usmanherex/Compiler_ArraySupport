@@ -17,6 +17,8 @@ static std::map<std::string, std::string> stringSymbolTable;
 static std::map<std::string, std::vector<double>> arrayTable;
 static std::map<std::string, std::vector<std::vector<double>>> arrayTable2D;
 static std::map<std::string, std::string> stringTable;
+static std::map<std::string, std::pair<std::string, std::vector<int>>> arrayViewTable;
+
 
 // Binary operation for arithmetic expressions
 double performBinaryOperation(double lhs, double rhs, int op) {
@@ -353,5 +355,94 @@ void dotProductArrays(const char* arr1, const char* arr2, const char* resultName
         throw std::runtime_error("Arrays not found.");
     }
 }
+void createArrayView(const char* viewName, const char* sourceName, int startRow, int endRow, int startCol, int endCol) {
+    std::string view(viewName);
+    std::string source(sourceName);
+    if (arrayTable2D.find(source) != arrayTable2D.end()) {
+        if (startRow < 0 || endRow > arrayTable2D[source].size() || startCol < 0 || 
+            (arrayTable2D[source].size() > 0 && endCol > arrayTable2D[source][0].size()) ||
+            startRow >= endRow || startCol >= endCol) {
+            throw std::runtime_error("Invalid view parameters");
+        }
+        
+        arrayViewTable[view] = std::make_pair(source, std::vector<int>{startRow, endRow, startCol, endCol});
+    } else {
+        throw std::runtime_error("Source array not found");
+    }
+}
+
+void setArrayViewElement(const char* viewName, int row, int col, double value) {
+    std::string view(viewName);
+    if (arrayViewTable.find(view) != arrayViewTable.end()) {
+        std::string source = arrayViewTable[view].first;
+        std::vector<int>& bounds = arrayViewTable[view].second;
+        int r = row + bounds[0];
+        int c = col + bounds[2];
+        
+        if (r >= bounds[0] && r < bounds[1] && c >= bounds[2] && c < bounds[3]) {
+            arrayTable2D[source][r][c] = value;
+        } else {
+            throw std::runtime_error("View index out of bounds");
+        }
+    } else {
+        throw std::runtime_error("Array view not found");
+    }
+}
+
+double getArrayViewElement(const char* viewName, int row, int col) {
+    std::string view(viewName);
+    if (arrayViewTable.find(view) != arrayViewTable.end()) {
+        std::string source = arrayViewTable[view].first;
+        std::vector<int>& bounds = arrayViewTable[view].second;
+        int r = row + bounds[0];
+        int c = col + bounds[2];
+        
+        if (r >= bounds[0] && r < bounds[1] && c >= bounds[2] && c < bounds[3]) {
+            return arrayTable2D[source][r][c];
+        } else {
+            throw std::runtime_error("View index out of bounds");
+        }
+    }
+    throw std::runtime_error("Array view not found");
+}
+
+struct DestructuringList {
+    std::vector<std::string> variables;
+};
+
+// Create a new destructuring list with the first variable
+DestructuringList* createDestructuringList(const char* var) {
+    DestructuringList* list = new DestructuringList();
+    list->variables.push_back(std::string(var));
+    return list;
+}
+
+// Add a variable to an existing destructuring list
+DestructuringList* addToDestructuringList(DestructuringList* list, const char* var) {
+    list->variables.push_back(std::string(var));
+    return list;
+}
+
+// Perform array destructuring
+void destructureArray(const char* arrayName, DestructuringList* list) {
+    std::string name(arrayName);
+    if (arrayTable.find(name) != arrayTable.end()) {
+        std::vector<double>& arr = arrayTable[name];
+        size_t numVars = list->variables.size();
+        
+        if (numVars > arr.size()) {
+            throw std::runtime_error("Not enough elements in the array for destructuring");
+        }
+        
+        for (size_t i = 0; i < numVars; ++i) {
+            setValueInSymbolTable(list->variables[i].c_str(), arr[i]);
+        }
+        
+        delete list; // Clean up the destructuring list
+    } else {
+        throw std::runtime_error("Array not found for destructuring");
+    }
+}
+
 
 #endif // IR_H

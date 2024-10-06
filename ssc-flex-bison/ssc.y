@@ -25,6 +25,7 @@
     double double_literal;
     int integer_literal;
     char *string_literal;
+    struct DestructuringList *destructuring_list;
 }
 
 %token tok_printd
@@ -41,6 +42,7 @@
 %token tok_avg
 %token tok_serialize
 %token tok_deserialize
+%token tok_view
 %token <identifier> tok_identifier
 %token <double_literal> tok_double_literal
 %token <string_literal> tok_string_literal
@@ -48,6 +50,7 @@
 
 
 %type <double_literal> term expression
+%type <destructuring_list> destructuring_list
 
 %left '+' '-' 
 %left '*' '/'
@@ -66,6 +69,10 @@ root:   /* empty */             {debugBison(1);}
     | array_declaration root    {debugBison(17);}
     | array_operation root      {debugBison(18);}
     | statistical_operation root {debugBison(19);}
+    | array_view root            {debugBison(39);}
+    | array_view_assign root     {debugBison(49);}
+    | array_destructuring root {debugBison(41);}
+    ;
     ;
 
 array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
@@ -76,7 +83,15 @@ array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integ
         ;
 
 array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
-            | tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(22); set2DArrayElement($1, $3, $5, $8);}
+            | tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     
+                {
+                    debugBison(22); 
+                    if (arrayViewTable.find($1) != arrayViewTable.end()) {
+                        setArrayViewElement($1, $3, $5, $8);
+                    } else {
+                        set2DArrayElement($1, $3, $5, $8);
+                    }
+                }
             | tok_double '[' ']' tok_identifier '=' tok_identifier '+' tok_identifier ';'     {debugBison(90); addArrays($4, $6, $8);}
             | tok_double '[' ']' tok_identifier '=' tok_identifier '-' tok_identifier ';'     {debugBison(90); subtractArrays($4, $6, $8);}
             | tok_double '[' ',' ']' tok_identifier '=' tok_identifier '*' tok_identifier ';'     {debugBison(90); multiplyArraysToMatrix($5, $7, $9);}
@@ -90,6 +105,24 @@ array_declaration:
     | tok_dynamic_array '<' tok_double '>' tok_identifier '=' tok_new tok_dynamic_array '<' tok_double '>' '(' tok_integer_literal ')' ';'
         {debugBison(9); createArray($5, $13);}
     ;
+
+array_view: tok_identifier '=' tok_identifier '.' tok_view '(' tok_integer_literal ',' tok_integer_literal ',' tok_integer_literal ',' tok_integer_literal ')' ';'
+    {debugBison(30); createArrayView($1, $3, $7, $9, $11, $13);}
+  ;
+
+array_view_assign: tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']' '=' tok_double_literal ';'
+    {debugBison(31); setArrayViewElement($1, $3, $5, $8);}
+  ;   
+
+array_destructuring: '[' destructuring_list ']' '=' tok_identifier ';'
+                     {debugBison(40); destructureArray($5, $2);}
+                   ;
+
+destructuring_list: tok_identifier
+                    {$$ = createDestructuringList($1);}
+                  | destructuring_list ',' tok_identifier
+                    {$$ = addToDestructuringList($1, $3);}
+                  ;
 
 array_operation:
     add_operation
@@ -136,7 +169,15 @@ printd: tok_printd '(' term ')' ';'     {debugBison(6); print("%lf\n", $3); }
 term:   tok_identifier          {debugBison(7); $$ = getDoubleFromSymbolTable($1); } 
     | tok_double_literal        {debugBison(8); $$ = $1; }
     | tok_identifier '[' tok_integer_literal ']' {debugBison(102); $$ = getArrayElement($1, $3);}
-    | tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']'        {debugBisonStr("Got 2D value"); $$ = get2DArrayElement($1, $3, $5);}
+    | tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']'        
+        {
+            debugBisonStr("Got 2D value or Array View"); 
+            if (arrayViewTable.find($1) != arrayViewTable.end()) {
+                $$ = getArrayViewElement($1, $3, $5);
+            } else {
+                $$ = get2DArrayElement($1, $3, $5);
+            }
+        }
     ;
 
 assignment:  tok_identifier '=' expression ';'  {debugBison(9); setValueInSymbolTable($1, $3); } 

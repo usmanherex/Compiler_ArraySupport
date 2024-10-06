@@ -53,10 +53,11 @@
      tok_avg = 269,
      tok_serialize = 270,
      tok_deserialize = 271,
-     tok_identifier = 272,
-     tok_double_literal = 273,
-     tok_string_literal = 274,
-     tok_integer_literal = 275
+     tok_view = 272,
+     tok_identifier = 273,
+     tok_double_literal = 274,
+     tok_string_literal = 275,
+     tok_integer_literal = 276
    };
 #endif
 
@@ -73,11 +74,12 @@ typedef union YYSTYPE
     double double_literal;
     int integer_literal;
     char *string_literal;
+    struct DestructuringList *destructuring_list;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 81 "ssc.tab.h"
+#line 83 "ssc.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

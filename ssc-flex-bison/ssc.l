@@ -34,6 +34,7 @@
 "avg"                   {debugFlex(tok_avg); return tok_avg;}
 "Serialize"             {debugFlex(tok_serialize); return tok_serialize;}
 "Deserialize"           {debugFlex(tok_deserialize); return tok_deserialize;}
+"View"                  {debugFlex(tok_view); return tok_view;}
 [a-zA-Z][a-zA-Z0-9_]*   {debugFlex(tok_identifier); yylval.identifier=strdup(yytext); return tok_identifier;}
 [0]|[1-9][0-9]*         {debugFlex(tok_integer_literal); yylval.integer_literal=atoi(yytext); return tok_integer_literal;}
 [0-9]+(\.[0-9]+)?       {debugFlex(tok_double_literal); yylval.double_literal=atof(yytext); return tok_double_literal;}

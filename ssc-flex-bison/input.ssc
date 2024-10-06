@@ -105,43 +105,66 @@ Deserialize(newArray, json);
 printd(newArray[0]);
 printd(newArray[4]);
 
-
 prints("END: Serialization Test");
 
-// Test for Custom Iterators
-CustomIterator iterator = new CustomIterator(singleDimArray);
-while (iterator.HasNext()) {
-    double value = iterator.Next();
-    print(value);
+prints("Start: Views Test");
+
+double[,] matrix = new double[3,3];
+matrix[0,0] = 1.1;
+matrix[0,1] = 1.2; 
+matrix[0,2] = 1.3;
+matrix[1,0] = 2.1;
+matrix[1,1] = 2.2; 
+matrix[1,2] = 2.3;
+matrix[2,0] = 3.1; 
+matrix[2,1] = 3.2; 
+matrix[2,2] = 3.3;
+
+arrayView = matrix.View(0,2,0,2);
+arrayView[1,1] = 5.5;
+
+printd(matrix[1,1]);
+printd(arrayView[1,1]);
+
+prints("End: Views Test");
+
+
+prints("Start: Array Destructuring Test");
+
+double[] arr = new double[4];
+arr[0] = 1.1;
+arr[1] = 2.2;
+arr[2] = 3.3;
+arr[3] = 4.4;
+
+[a, b, c, d] = arr;
+
+printd(a);
+printd(b);
+printd(c);
+printd(d);
+
+prints("End: Array Destructuring Test");
+
+prints("start:  Custom Iterator Test");
+// Create an array
+double[] arr = new double[5];
+arr[0] = 1.0;
+arr[1] = 2.0;
+arr[2] = 3.0;
+arr[3] = 4.0;
+arr[4] = 5.0;
+
+// Create an iterator
+it = Iterator(arr);
+
+// Use the iterator to sum the array elements
+sum = 0.0;
+while (it.hasNext()) {
+    sum = sum + it.next();
 }
 
-// Test for Array Views
-ArrayView<double> view = doubleDimArray.View(0 2 0 2); // View a 2x2 sub-matrix
-view[0 0] = 9.81; // Modify through the view
-print(view[0 0], view[1 1]);
+// Print the sum
+printd(sum);
 
-// Test for Array Destructuring
-double[] arr = {1.0, 2.0, 3.0, 4.0};
-double a = 0.0, b = 0.0, c = 0.0, d = 0.0;
-[a, b, c, d] = arr; // Destructuring into variables
-print(a, b, c, d);
-
-// Test for Array Serialization and Deserialization
-string json = JsonSerializer.Serialize(singleDimArray); // Serialize to JSON
-double[] deserializedArray = JsonSerializer.Deserialize<double[]>(json); // Deserialize
-print(deserializedArray[0]);
-print(deserializedArray[4]);
-
-// Test for Arithmetic Features
-double[] Arr1 = {1.0, 2.0, 3.0};
-double[] Arr2 = {4.0, 5.0, 6.0};
-double[] Arr3 = Arr1 + Arr2; // Addition
-print(Arr3[0], Arr3[2]); // Expected output: {5.0, 9.0}
-
-// Test for Statistical Features
-double sumVal = sum(singleDimArray); // Sum of elements in singleDimArray
-double minVal = min(singleDimArray); // Min of elements
-double maxVal = max(singleDimArray); // Max of elements
-double avgVal = avg(singleDimArray); // Average of elements
-print(sumVal, minVal, maxVal, avgVal);
-
+prints("End: Custom Iterator Test");
