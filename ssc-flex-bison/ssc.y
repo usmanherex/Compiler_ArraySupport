@@ -31,7 +31,11 @@
 %token tok_printd
 %token tok_double
 %token tok_prints
+%token tok_iterator
+%token tok_hasNext
+%token tok_next
 %token tok_slice
+%token tok_while
 %token tok_new
 %token tok_add
 %token tok_resize
@@ -63,6 +67,7 @@
 root:   /* empty */             {debugBison(1);}    
     | prints  root              {debugBison(2);}
     | printd  root              {debugBison(3);}
+    | iterator root             {debugBison(1000);}
     | assignment  root          {debugBison(4);}
     | array root                {debugBison(16);}
     | array_assign root         {debugBison(16);}
@@ -72,8 +77,7 @@ root:   /* empty */             {debugBison(1);}
     | array_view root            {debugBison(39);}
     | array_view_assign root     {debugBison(49);}
     | array_destructuring root {debugBison(41);}
-    ;
-    ;
+    ; 
 
 array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal ']' ';'     {debugBison(17); createArray($4, $9);}
         | tok_double '[' ',' ']' tok_identifier '=' tok_new tok_double '[' tok_integer_literal',' tok_integer_literal ']' ';'     {debugBison(17); create2DArray($5, $10, $12);}
@@ -169,6 +173,7 @@ printd: tok_printd '(' term ')' ';'     {debugBison(6); print("%lf\n", $3); }
 term:   tok_identifier          {debugBison(7); $$ = getDoubleFromSymbolTable($1); } 
     | tok_double_literal        {debugBison(8); $$ = $1; }
     | tok_identifier '[' tok_integer_literal ']' {debugBison(102); $$ = getArrayElement($1, $3);}
+    | tok_identifier '.' tok_next '(' ')' {debugBison(1002); $$ = next($1);}
     | tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']'        
         {
             debugBisonStr("Got 2D value or Array View"); 
@@ -179,11 +184,13 @@ term:   tok_identifier          {debugBison(7); $$ = getDoubleFromSymbolTable($1
             }
         }
     ;
+iterator: tok_identifier '=' tok_iterator '(' tok_identifier ')' ';'  {debugBison(1001); createIterator($1, $5);} 
+        | tok_while '(' tok_identifier '.' tok_hasNext '(' ')' ')' '{' assignment '}' {debugBison(1003); hasNext($3);}
+        ;
 
-assignment:  tok_identifier '=' expression ';'  {debugBison(9); setValueInSymbolTable($1, $3); } 
-          |  tok_identifier '=' tok_identifier '.' '.' tok_identifier ';'  {debugBison(9); dotProductArrays($6, $3, $1); } 
-          ;
-    ;
+assignment : tok_identifier '=' expression ';'  {debugBison(9); setValueInSymbolTable($1, $3); } 
+           | tok_identifier '=' tok_identifier '.' '.' tok_identifier ';'  {debugBison(9); dotProductArrays($6, $3, $1); } 
+           ; 
     
 expression: term                {debugBison(10); $$= $1;}
        | expression '+' expression      {debugBison(11); $$ = performBinaryOperation ($1, $3, '+');}

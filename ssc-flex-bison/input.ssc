@@ -147,6 +147,7 @@ printd(d);
 prints("End: Array Destructuring Test");
 
 prints("start:  Custom Iterator Test");
+
 // Create an array
 double[] arr = new double[5];
 arr[0] = 1.0;
@@ -159,12 +160,19 @@ arr[4] = 5.0;
 it = Iterator(arr);
 
 // Use the iterator to sum the array elements
-sum = 0.0;
-while (it.hasNext()) {
-    sum = sum + it.next();
-}
+total = 0.0;
+total = total + it.next();
+total = total + it.next();
+total = total + it.next();
+total = total + it.next();
+total = total + it.next();
 
 // Print the sum
-printd(sum);
+printd(total);
+
+//while (it.hasNext()) {
+//    total = total + it.next();
+//}
+
 
 prints("End: Custom Iterator Test");

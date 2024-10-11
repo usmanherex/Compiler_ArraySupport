@@ -18,7 +18,7 @@ static std::map<std::string, std::vector<double>> arrayTable;
 static std::map<std::string, std::vector<std::vector<double>>> arrayTable2D;
 static std::map<std::string, std::string> stringTable;
 static std::map<std::string, std::pair<std::string, std::vector<int>>> arrayViewTable;
-
+static std::map<std::string, std::vector<double>::iterator> iteratorTable; // Stores iterators for arrays
 
 // Binary operation for arithmetic expressions
 double performBinaryOperation(double lhs, double rhs, int op) {
@@ -444,5 +444,46 @@ void destructureArray(const char* arrayName, DestructuringList* list) {
     }
 }
 
+// Create an iterator for the array
 
+void createIterator(const char* iteratorName, const char* arrayName) {
+    std::string iterName(iteratorName);
+    std::string arrName(arrayName);
+
+    if (arrayTable.find(arrName) != arrayTable.end()) {
+        iteratorTable[iterName] = arrayTable[arrName].begin(); // Store the iterator by iterator name
+    } else {
+        throw std::runtime_error("Array not found");
+    }
+}
+
+// Check if the iterator has next element
+int hasNext(const char* iteratorName) {
+    std::string iterName(iteratorName);
+
+    if (iteratorTable.find(iterName) != iteratorTable.end()) {
+        // Get the associated array name to check if iterator is at the end of the array
+        for (const auto& arr : arrayTable) {
+            if (iteratorTable[iterName] != arr.second.end()) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        throw std::runtime_error("Iterator not found");
+    }
+}
+
+// Get the next element from the iterator
+double next(const char* iteratorName) {
+    std::string iterName(iteratorName);
+
+    if (iteratorTable.find(iterName) != iteratorTable.end()) {
+        double value = *iteratorTable[iterName]; // Dereference the iterator
+        ++iteratorTable[iterName];              // Increment the iterator
+        return value;
+    } else {
+        throw std::runtime_error("Iterator not found");
+    }
+}
 #endif // IR_H

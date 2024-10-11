@@ -22,12 +22,16 @@
 
 "printd"                {debugFlex(tok_printd); return tok_printd;}
 "prints"                {debugFlex(tok_prints); return tok_prints;}
+"while"                {debugFlex(tok_while); return tok_while;}
 "Slice"                 {debugFlex(tok_slice); return tok_slice;}
 "double"                {debugFlex(tok_double); return tok_double;}
 "new"                   {debugFlex(tok_new); return tok_new;}
 "Add"                   {debugFlex(tok_add); return tok_add;}
 "Resize"                {debugFlex(tok_resize); return tok_resize;}
 "DynamicArray"          {debugFlex(tok_dynamic_array); return tok_dynamic_array;}
+"Iterator"              {debugFlex(tok_iterator); return tok_iterator;}
+"hasNext"               {debugFlex(tok_hasNext); return tok_hasNext;}
+"next"                  {debugFlex(tok_next); return tok_next;}
 "sum"                   {debugFlex(tok_sum); return tok_sum;}
 "min"                   {debugFlex(tok_min); return tok_min;}
 "max"                   {debugFlex(tok_max); return tok_max;}
@@ -41,7 +45,7 @@
 \"[^"]*\"               {debugFlex(tok_string_literal); yylval.string_literal=strdup(yytext); return tok_string_literal;}
 \/\/.*                  {;}
 [ \n\r\t]               {;}
-","|"]"|"["|"+"|"-"|"*"|"\/"|"="|";"|"("|")"|"<"|">"|"\." {debugFlex(yytext[0]); return yytext[0];} 
+"}"|"{"|","|"]"|"["|"+"|"-"|"*"|"\/"|"="|";"|"("|")"|"<"|">"|"\." {debugFlex(yytext[0]); return yytext[0];} 
 .                       {debugFlex(-1); yyerror("this is a illegal lexeme"); exit(EXIT_FAILURE);}
 %%
 
