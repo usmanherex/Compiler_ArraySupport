@@ -1,0 +1,10 @@
+prints("This is Being Executed");
+// Test for Dynamic Resizing
+DynamicArray<double> dynamicArray = new DynamicArray<double>();
+dynamicArray.Add(1.1 + 1.0);
+dynamicArray.Add(2.2);
+dynamicArray.Resize(5);
+dynamicArray[3] = 4.4;
+printd(dynamicArray[0]);
+
+prints("resize Array Tests Complete.");

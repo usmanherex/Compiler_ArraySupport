@@ -10,7 +10,7 @@
     void yyerror(const char *err);
 
     
-    #define DEBUGBISON
+    //#define DEBUGBISON
     //This code is for producing debug output.
     #ifdef DEBUGBISON
         #define debugBison(a) (printf("\n%d \n",a))
@@ -75,7 +75,7 @@ root:   /* empty */             {debugBison(1);}
     | array_operation root      {debugBison(18);}
     | statistical_operation root {debugBison(19);}
     | array_view root            {debugBison(39);}
-    | array_view_assign root     {debugBison(49);}
+    //| array_view_assign root     {debugBison(49);}
     | array_destructuring root {debugBison(41);}
     ; 
 
@@ -86,8 +86,9 @@ array   : tok_double '[' ']' tok_identifier '=' tok_new tok_double '[' tok_integ
             {debugBison(300); slice2D($7, $5, $11, $13, $15, $17);}
         ;
 
-array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal ';'     {debugBison(18); setArrayElement($1, $3, $6);}
-            | tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     
+array_assign: 
+              //tok_identifier '[' tok_integer_literal ']' '=' expression ';' {debugBison(12); setArrayElement($1, $3, $6);}
+             tok_identifier '[' tok_integer_literal','tok_integer_literal ']' '=' tok_double_literal ';'     
                 {
                     debugBison(22); 
                     if (arrayViewTable.find($1) != arrayViewTable.end()) {
@@ -99,8 +100,8 @@ array_assign: tok_identifier '[' tok_integer_literal ']' '=' tok_double_literal 
             | tok_double '[' ']' tok_identifier '=' tok_identifier '+' tok_identifier ';'     {debugBison(90); addArrays($4, $6, $8);}
             | tok_double '[' ']' tok_identifier '=' tok_identifier '-' tok_identifier ';'     {debugBison(90); subtractArrays($4, $6, $8);}
             | tok_double '[' ',' ']' tok_identifier '=' tok_identifier '*' tok_identifier ';'     {debugBison(90); multiplyArraysToMatrix($5, $7, $9);}
-            | tok_identifier '.' tok_add '(' tok_double_literal ')' ';'     {debugBison(23); addToArray($1, $5);}
-            | tok_identifier '.' tok_resize '(' tok_integer_literal ')' ';'     {debugBison(24); resizeArray($1, $5);}
+            //| tok_identifier '.' tok_add '(' tok_double_literal ')' ';'     {debugBison(23); addToArray($1, $5);}
+            //| tok_identifier '.' tok_resize '(' tok_integer_literal ')' ';'     {debugBison(24); resizeArray($1, $5);}
             ;
 
 array_declaration:
@@ -114,9 +115,9 @@ array_view: tok_identifier '=' tok_identifier '.' tok_view '(' tok_integer_liter
     {debugBison(30); createArrayView($1, $3, $7, $9, $11, $13);}
   ;
 
-array_view_assign: tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']' '=' tok_double_literal ';'
-    {debugBison(31); setArrayViewElement($1, $3, $5, $8);}
-  ;   
+// array_view_assign: tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']' '=' tok_double_literal ';'
+//    {debugBison(31); setArrayViewElement($1, $3, $5, $8);}
+//  ;   
 
 array_destructuring: '[' destructuring_list ']' '=' tok_identifier ';'
                      {debugBison(40); destructureArray($5, $2);}
@@ -176,7 +177,7 @@ term:   tok_identifier          {debugBison(7); $$ = getDoubleFromSymbolTable($1
     | tok_identifier '.' tok_next '(' ')' {debugBison(1002); $$ = next($1);}
     | tok_identifier '[' tok_integer_literal ',' tok_integer_literal ']'        
         {
-            debugBisonStr("Got 2D value or Array View"); 
+            // debugBisonStr("Got 2D value or Array View"); 
             if (arrayViewTable.find($1) != arrayViewTable.end()) {
                 $$ = getArrayViewElement($1, $3, $5);
             } else {

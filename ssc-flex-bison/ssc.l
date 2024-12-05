@@ -6,7 +6,7 @@
     #include <string.h>
     extern void yyerror(const char *msg);
     
-     #define DEBUGSSC
+    // #define DEBUGSSC
     //This code is for producing debug output.
     #ifdef DEBUGSSC
         #define debugFlex(a) (printf("\n%d: Token=<ID, lexeme>=<%d, %s>\n",yylineno, a, yytext))
